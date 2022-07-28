@@ -51,7 +51,7 @@ export HRULEWIDTH=73
 export EDITOR=vi
 export VISUAL=vi
 export EDITOR_PREFIX=vi
-export GOPRIVATE="github.com/$GITUSER/*,gitlab.com/$GITUSER/*"
+export GOPRIVATE="github.com/$GITUSER/"*
 export GOPATH="$HOME/.local/share/go"
 export GOBIN="$HOME/.local/bin"
 export GOPROXY=direct
@@ -126,7 +126,6 @@ pathprepend \
 
 pathappend \
   /usr/local/opt/coreutils/libexec/gnubin \
-  '/mnt/c/Program Files/Oracle/VirtualBox' \
   '/mnt/c/Windows' \
   '/mnt/c/Program Files (x86)/VMware/VMware Workstation' \
   /mingw64/bin \
