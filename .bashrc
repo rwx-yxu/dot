@@ -1,20 +1,22 @@
 #!bash
 # shellcheck disable=SC1090
-
+# Detect whether this bashrc is from a login shell or running as an  interactive shell. If it is running as interactively; then continue to run otherwise, stop here.
 case $- in
-*i*) ;; # interactive
+*i*) ;; # interactive, also if [[ -t 0 ]]. Checks to see if the programs output is sent to 0 which is standard output.
 *) return ;; 
 esac
 
 # ------------------------- distro detection -------------------------
 
-export DISTRO
+export DISTRO4
 [[ $(uname -r) =~ Microsoft ]] && DISTRO=WSL2 #TODO distinguish WSL1
 #TODO add the rest
 
 # ---------------------- local utility functions ---------------------
-
+# Check if you have a function alias or script in the path. Comes back
+# as true.
 _have()      { type "$1" &>/dev/null; }
+# If the first argument exists, then it is a readable file.
 _source_if() { [[ -r "$1" ]] && source "$1"; }
 
 # ----------------------- environment variables ----------------------
@@ -85,7 +87,7 @@ if [[ -x /usr/bin/lesspipe ]]; then
 fi
 
 # ----------------------------- dircolors ----------------------------
-
+# Directory and files colors for ls
 if _have dircolors; then
   if [[ -r "$HOME/.dircolors" ]]; then
     eval "$(dircolors -b "$HOME/.dircolors")"
@@ -95,7 +97,8 @@ if _have dircolors; then
 fi
 
 # ------------------------------- path -------------------------------
-
+# Export functions. Only in bash.
+# Add a new path to the end if it does not already exist.
 pathappend() {
   declare arg
   for arg in "$@"; do
@@ -144,9 +147,9 @@ pathappend \
 export CDPATH=".:$GHREPOS:$DOTFILES:$REPOS:/media/$USER:$HOME"
 
 # ------------------------ bash shell options ------------------------
-
-shopt -s checkwinsize
-shopt -s expand_aliases
+# shopt is for BASHOPTS, set is for SHELLOPTS.
+shopt -s checkwinsize # Enables columns and rows.
+shopt -s expand_aliases 
 shopt -s globstar
 shopt -s dotglob
 shopt -s extglob
@@ -163,7 +166,7 @@ stty stop undef # disable control-s accidental terminal stops
 export HISTCONTROL=ignoreboth
 export HISTSIZE=5000
 export HISTFILESIZE=10000
-
+# Press esc after to use the vi keys for search
 set -o vi
 shopt -s histappend
 
@@ -207,7 +210,7 @@ __ps1() {
 PROMPT_COMMAND="__ps1"
 
 # ----------------------------- keyboard -----------------------------
-
+# Only works if you have X and are using graphic Linux desktop
 _have setxkbmap && test -n "$DISPLAY" && \
   setxkbmap -option caps:escape &>/dev/null
 
@@ -259,7 +262,7 @@ envx() {
 } && export -f envx
 
 [[ -e "$HOME/.env" ]] && envx "$HOME/.env"
-
+# Create a new github repo
 new-from() { 
   local template="$1"
   local name="$2"
@@ -310,7 +313,7 @@ owncomp=(
 )
 
 for i in "${owncomp[@]}"; do complete -C "$i" "$i"; done
-
+# Use its own completion method that is not compatible with complete -C
 _have gh && . <(gh completion -s bash)
 _have pandoc && . <(pandoc --bash-completion)
 _have kubectl && . <(kubectl completion bash 2>/dev/null)
@@ -323,25 +326,10 @@ _have helm && . <(helm completion bash)
 _have minikube && . <(minikube completion bash)
 _have conftest && . <(conftest completion bash)
 _have mk && complete -o default -F __start_minikube mk
+# Use independant completion file and source it.
 _have podman && _source_if "$HOME/.local/share/podman/completion" # d
 _have docker && _source_if "$HOME/.local/share/docker/completion" # d
 _have docker-compose && complete -F _docker_compose dc # dc
-
-
-_swaggercomp() {
-    # All arguments except the first one
-    args=("${COMP_WORDS[@]:1:$COMP_CWORD}")
-
-    # Only split on newlines
-    local IFS=$'\n'
-
-    # Call completion (note that the first element of COMP_WORDS is
-    # the executable itself)
-    COMPREPLY=($(GO_FLAGS_COMPLETION=1 ${COMP_WORDS[0]} "${args[@]}"))
-    return 0
-} && export -f _swaggercomp
-
-_have swagger && complete -F _swaggercomp swagger
 
 # -------------------- personalized configuration --------------------
 _source_if "$HOME/.bash_personal"
