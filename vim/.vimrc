@@ -1,9 +1,10 @@
 " designed for vim 8+
-
+" Checks for full version of vim instead of vim-tiny
 if has("eval")                               " vim-tiny lacks 'eval'
   let skip_defaults_vim = 1
 endif
-
+" Compatibility mode for vi doesn't really work as intended to set it to
+" off.
 set nocompatible
 
 "####################### Vi Compatible (~/.exrc) #######################
@@ -40,7 +41,7 @@ set shiftwidth=2
 set smartindent
 
 set smarttab
-
+" Check vim version 8
 if v:version >= 800
   " stop vim from silently messing with files that it shouldn't
   set nofixendofline
@@ -82,10 +83,10 @@ set nowritebackup
 
 set icon
 
-" center the cursor always on the screen
+" center the cursor always on the screen when scrolling
 "set scrolloff=999
 
-" highlight search hits
+" highlight search hits. Can use ctl+l to refresh the screen.
 set hlsearch
 set incsearch
 set linebreak
@@ -93,7 +94,8 @@ set linebreak
 " avoid most of the 'Hit Enter ...' messages
 set shortmess=aoOtTI
 
-" prevents truncated yanks, deletes, etc.
+" prevents truncated yanks, deletes, etc. Use unix filter command yyy to
+" save to temp file instead of relying on vim buffers.
 set viminfo='20,<1000,s1000
 
 " not a fan of bracket matching or folding
@@ -105,7 +107,7 @@ set noshowmatch
 " wrap around when searching
 set wrapscan
 
-" Just the defaults, these are changed per filetype by plugins.
+" Just the defaults for format options, these are changed per filetype by plugins.
 " Most of the utility of all of this has been superceded by the use of
 " modern simplified pandoc for capturing knowledge source instead of
 " arbitrary raw text files.
@@ -205,19 +207,19 @@ au FileType c set sw=8
 
 set cinoptions+=:0
 
-" Edit/Reload vimr configuration file
+" Edit/Reload vimrc configuration file
 nnoremap confe :e $HOME/.vimrc<CR>
 nnoremap confr :source $HOME/.vimrc<CR>
 
 set ruf=%30(%=%#LineNr#%.50F\ [%{strlen(&ft)?&ft:'none'}]\ %l:%c\ %p%%%)
 
-" only load plugins if Plug detected
+" only load plugins if Plug detected. This means that I can just copy
+" over the .vimrc file for it to just work without plugins.
 if filereadable(expand("~/.vim/autoload/plug.vim"))
 
   " github.com/junegunn/vim-plug
 
   call plug#begin('~/.local/share/vim/plugins')
-  Plug 'frazrepo/vim-rainbow'
   Plug 'vim-pandoc/vim-pandoc'
   Plug 'pegn/pegn-syntax'
   Plug 'rwxrob/vim-pandoc-syntax-simple'
@@ -261,12 +263,6 @@ if filereadable(expand("~/.vim/autoload/plug.vim"))
   "let g:go_metalinter_autosave=1
   set updatetime=100
   "let g:go_gopls_analyses = { 'composites' : v:false }
-  au FileType go nmap <leader>t :GoTest!<CR>
-  au FileType go nmap <leader>v :GoVet!<CR>
-  au FileType go nmap <leader>b :GoBuild!<CR>
-  au FileType go nmap <leader>c :GoCoverageToggle<CR>
-  au FileType go nmap <leader>i :GoInfo<CR>
-  au FileType go nmap <leader>l :GoMetaLinter!<CR>
   au FileType go nmap <leader>m ilog.Print("made")<CR><ESC>
   au FileType go nmap <leader>n iif err != nil {return err}<CR><ESC>
 else
