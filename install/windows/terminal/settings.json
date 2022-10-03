@@ -4,16 +4,16 @@
     "actions": 
     [
         {
-            "command": "paste",
-            "keys": "ctrl+v"
-        },
-        {
             "command": 
             {
                 "action": "copy",
                 "singleLine": false
             },
             "keys": "ctrl+c"
+        },
+        {
+            "command": "paste",
+            "keys": "ctrl+v"
         },
         {
             "command": "find",
@@ -29,10 +29,13 @@
             "keys": "alt+shift+d"
         }
     ],
+    "alwaysShowTabs": true,
     "copyFormatting": "none",
-    "copyOnSelect": false,
-    "defaultProfile": "{e6f59385-ccc8-4b92-af9e-70e357bd54a8}",
-    "launchMode": "fullscreen",
+    "copyOnSelect": true,
+    "defaultProfile": "{92f4304c-99b4-4426-b280-0a46b946d145}",
+    "disableAnimations": true,
+    "initialCols": 80,
+    "launchMode": "default",
     "profiles": 
     {
         "defaults": 
@@ -40,12 +43,12 @@
             "bellStyle": "none",
             "closeOnExit": "always",
             "colorScheme": "Gruvbox",
-            "cursorShape": "filledBox",
+            "cursorShape": "bar",
             "font": 
             {
-                "face": "Ubuntu Mono",
-                "size": 28,
-                "weight": "normal"
+                "face": "Cascadia Code",
+                "size": 22,
+                "weight": "semi-bold"
             },
             "scrollbarState": "hidden",
             "startingDirectory": "%USERPROFILE%",
@@ -64,9 +67,17 @@
                 "name": "Command Prompt"
             },
             {
+                "colorScheme": "Gruvbox",
+                "guid": "{bfba4cbb-4923-5313-9478-2b7452e79c08}",
+                "hidden": false,
+                "name": "Developer Command Prompt for VS 2019",
+                "source": "Windows.Terminal.VisualStudio"
+            },
+            {
                 "commandline": "C:\\Program Files\\Git\\bin\\bash.exe",
-                "guid": "{e6f59385-ccc8-4b92-af9e-70e357bd54a8}",
-                "name": "git-bash"
+                "guid": "{92f4304c-99b4-4426-b280-0a46b946d145}",
+                "hidden": false,
+                "name": "Git bash"
             }
         ]
     },
@@ -302,6 +313,5 @@
             "white": "#C0C0C0",
             "yellow": "#808000"
         }
-    ],
-    "startOnUserLogin": true
+    ]
 }

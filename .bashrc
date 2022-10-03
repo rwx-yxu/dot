@@ -77,7 +77,7 @@ export ANSIBLE_INVENTORY="$HOME/.config/ansible/ansible_hosts"
 
 # -------------------------------- gpg -------------------------------
 
-#export GPG_TTY=$(tty)
+export GPG_TTY=$(tty)
 
 # ------------------------------- pager ------------------------------
 
