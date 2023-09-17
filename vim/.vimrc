@@ -1,16 +1,26 @@
 " designed for vim 8+
-" Checks for full version of vim instead of vim-tiny
+
 if has("eval")                               " vim-tiny lacks 'eval'
   let skip_defaults_vim = 1
 endif
-" Compatibility mode for vi doesn't really work as intended to set it to
-" off.
+
 set nocompatible
 
 "####################### Vi Compatible (~/.exrc) #######################
 
 " automatically indent new lines
-set autoindent
+set autoindent " (alpine)
+
+set noflash " (alpine-ish only)
+
+" replace tabs with spaces automatically
+set expandtab " (alpine)
+
+" number of spaces to replace a tab with when expandtab
+set tabstop=2 " (alpine)
+
+" use case when searching
+set noignorecase
 
 " automatically write files when changing when multiple files open
 set autowrite
@@ -24,13 +34,11 @@ set ruler " see ruf for formatting
 " show command and insert mode
 set showmode
 
-set tabstop=2
-
 "#######################################################################
 
 " disable visual bell (also disable in .inputrc)
 set t_vb=
-
+" Leader key
 let mapleader=","
 
 set softtabstop=2
@@ -41,7 +49,7 @@ set shiftwidth=2
 set smartindent
 
 set smarttab
-" Check vim version 8
+
 if v:version >= 800
   " stop vim from silently messing with files that it shouldn't
   set nofixendofline
@@ -60,9 +68,6 @@ match IncSearch '\s\+$'
 " enough for line numbers + gutter within 80 standard
 set textwidth=72
 "set colorcolumn=73
-
-" replace tabs with spaces automatically
-set expandtab
 
 " disable relative line numbers, remove no to sample it
 set norelativenumber
@@ -83,10 +88,10 @@ set nowritebackup
 
 set icon
 
-" center the cursor always on the screen when scrolling
+" center the cursor always on the screen
 "set scrolloff=999
 
-" highlight search hits. Can use ctl+l to refresh the screen.
+" highlight search hits
 set hlsearch
 set incsearch
 set linebreak
@@ -94,8 +99,7 @@ set linebreak
 " avoid most of the 'Hit Enter ...' messages
 set shortmess=aoOtTI
 
-" prevents truncated yanks, deletes, etc. Use unix filter command yyy to
-" save to temp file instead of relying on vim buffers.
+" prevents truncated yanks, deletes, etc.
 set viminfo='20,<1000,s1000
 
 " not a fan of bracket matching or folding
@@ -106,9 +110,10 @@ set noshowmatch
 
 " wrap around when searching
 set wrapscan
+set nowrap
 
-" Just the defaults for format options, these are changed per filetype by plugins.
-" Most of the utility of all of this has been superceded by the use of
+" Just the formatoptions defaults, these are changed per filetype by
+" plugins. Most of the utility of all of this has been superceded by the use of
 " modern simplified pandoc for capturing knowledge source instead of
 " arbitrary raw text files.
 
@@ -156,6 +161,9 @@ filetype plugin on
 " high contrast for streaming, etc.
 set background=dark
 
+" make gutter less annoying
+hi SignColumn ctermbg=NONE
+
 " base default color changes (gruvbox dark friendly)
 hi StatusLine ctermfg=black ctermbg=NONE
 hi StatusLineNC ctermfg=black ctermbg=NONE
@@ -200,10 +208,14 @@ au FileType * hi IncSearch ctermbg=236 cterm=NONE ctermfg=darkred
 au FileType * hi MatchParen ctermbg=236 ctermfg=darkred
 au FileType markdown,pandoc hi Title ctermfg=yellow ctermbg=NONE
 au FileType markdown,pandoc hi Operator ctermfg=yellow ctermbg=NONE
+au FileType markdown,pandoc set tw=0
 au FileType yaml hi yamlBlockMappingKey ctermfg=NONE
-au FileType yaml set sw=4
+au FileType yaml set sw=2
 au FileType bash set sw=2
 au FileType c set sw=8
+au FileType markdown,pandoc noremap j gj
+au FileType markdown,pandoc noremap k gk
+au FileType sh set noet
 
 set cinoptions+=:0
 
@@ -213,28 +225,24 @@ nnoremap confr :source $HOME/.vimrc<CR>
 
 set ruf=%30(%=%#LineNr#%.50F\ [%{strlen(&ft)?&ft:'none'}]\ %l:%c\ %p%%%)
 
-" only load plugins if Plug detected. This means that I can just copy
-" over the .vimrc file for it to just work without plugins.
+" only load plugins if Plug detected
 if filereadable(expand("~/.vim/autoload/plug.vim"))
 
   " github.com/junegunn/vim-plug
 
   call plug#begin('~/.local/share/vim/plugins')
-  Plug 'vim-pandoc/vim-pandoc'
-  Plug 'pegn/pegn-syntax'
-  Plug 'rwxrob/vim-pandoc-syntax-simple'
-  Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
-  Plug 'tpope/vim-fugitive'
-  Plug 'hashivim/vim-terraform'
+  Plug 'zah/nim.vim'
+  Plug 'conradirwin/vim-bracketed-paste'
   Plug 'morhetz/gruvbox'
+  Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
+  Plug 'vim-pandoc/vim-pandoc'
+  Plug 'rwxrob/vim-pandoc-syntax-simple'
+  Plug 'dense-analysis/ale'
   call plug#end()
 
-  " rainbow
-  " FIXME: only do this for non-pandoc file types
-  "let g:rainbow_active=1
-
-  " terraform
-  let g:terraform_fmt_on_save = 1
+  let g:ale_sign_error = '☠'
+  let g:ale_sign_warning = '🙄'
+  let g:ale_linters = {'go': ['gometalinter', 'gofmt','gobuild']}
 
   " pandoc
   let g:pandoc#formatting#mode = 'h' " A'
@@ -258,9 +266,9 @@ if filereadable(expand("~/.vim/autoload/plug.vim"))
   let g:go_highlight_diagnostic_warnings = 1
   "let g:go_auto_type_info = 1 " forces 'Press ENTER' too much
   let g:go_auto_sameids = 0
-  "let g:go_metalinter_command='golangci-lint'
-  "let g:go_metalinter_command='golint'
-  "let g:go_metalinter_autosave=1
+  "    let g:go_metalinter_command='golangci-lint'
+  "    let g:go_metalinter_command='golint'
+  "    let g:go_metalinter_autosave=1
   set updatetime=100
   "let g:go_gopls_analyses = { 'composites' : v:false }
   au FileType go nmap <leader>m ilog.Print("made")<CR><ESC>
@@ -268,6 +276,12 @@ if filereadable(expand("~/.vim/autoload/plug.vim"))
 else
   autocmd vimleavepre *.go !gofmt -w % " backup if fatih fails
 endif
+
+" force loclist to always close when buffer does (affects vim-go, etc.)
+augroup CloseLoclistWindowGroup
+  autocmd!
+  autocmd QuitPre * if empty(&buftype) | lclose | endif
+augroup END
 
 " format perl on save
 if has("eval") " vim-tiny detection
@@ -277,6 +291,18 @@ fun! s:Perltidy()
   call setpos('.', l:pos)
 endfun
 "autocmd FileType perl autocmd BufWritePre <buffer> call s:Perltidy()
+endif
+
+" format shell on save
+if has("eval") " vim-tiny detection
+" TODO check for shfmt and shellcheck before defining
+" FIXME stop from blowing away file when there is shell error
+fun! s:FormatShell()
+  let l:pos = getcurpos()
+  "silent execute '%!shfmt' " FIXME: bug report to shfmt
+  call setpos('.', l:pos)
+endfun
+autocmd FileType sh autocmd BufWritePre <buffer> call s:FormatShell()
 endif
 
 "autocmd vimleavepre *.md !perl -p -i -e 's,(?<!\[)my `(\w+)` (package|module|repo|command|utility),[my `\1` \2](https://gitlab.com/rwxrob/\1),g' %
@@ -290,9 +316,9 @@ autocmd BufWritePost *.md silent !toemoji %
 autocmd BufWritePost *.md silent !toduck %
 
 " fill in anything beginning with @ with a link to twitch to it
-" autocmd vimleavepre *.md !perl -p -i -e 's, @(\w+), [\\@\1](https://twitch.tv/\1),g' %
+"autocmd vimleavepre *.md !perl -p -i -e 's, @(\w+), [\\@\1](https://twitch.tv/\1),g' %
 
-" make Y consitent with D and C (yank til end)
+" make Y consistent with D and C (yank til end)
 map Y y$
 
 " better command-line completion
@@ -317,8 +343,11 @@ au bufnewfile,bufRead $SNIPPETS/python/* set ft=python
 au bufnewfile,bufRead $SNIPPETS/perl/* set ft=perl
 au bufnewfile,bufRead user-data set ft=yaml
 au bufnewfile,bufRead meta-data set ft=yaml
+au bufnewfile,bufRead *.ddl set ft=sql
+au bufnewfile,bufRead keg set ft=yaml
 au bufnewfile,bufRead *.bash* set ft=bash
 au bufnewfile,bufRead *.{peg,pegn} set ft=config
+au bufnewfile,bufRead *.gotmpl set ft=go
 au bufnewfile,bufRead *.profile set filetype=sh
 au bufnewfile,bufRead *.crontab set filetype=crontab
 au bufnewfile,bufRead *ssh/config set filetype=sshconfig
@@ -327,6 +356,7 @@ au bufnewfile,bufRead *gitconfig set filetype=gitconfig
 au bufnewfile,bufRead /tmp/psql.edit.* set syntax=sql
 au bufnewfile,bufRead *.go set spell spellcapcheck=0
 au bufnewfile,bufRead commands.yaml set spell
+au bufnewfile,bufRead *.txt set spell
 
 "fix bork bash detection
 if has("eval")  " vim-tiny detection
@@ -367,18 +397,18 @@ map <F12> :set fdm=indent<CR>
 nmap <leader>2 :set paste<CR>i
 
 " disable arrow keys (vi muscle memory)
-"noremap <up> :echoerr "Umm, use k instead"<CR>
-"noremap <down> :echoerr "Umm, use j instead"<CR>
-"noremap <left> :echoerr "Umm, use h instead"<CR>
+" noremap <up> :echoerr "Umm, use k instead"<CR>
+" noremap <down> :echoerr "Umm, use j instead"<CR>
+" noremap <left> :echoerr "Umm, use h instead"<CR>
 " noremap <right> :echoerr "Umm, use l instead"<CR>
 " inoremap <up> <NOP>
 " inoremap <down> <NOP>
 " inoremap <left> <NOP>
 " inoremap <right> <NOP>
-"
+
 " better use of arrow keys, number increment/decrement
-nnoremap <up> <C-a>
-nnoremap <down> <C-x>
+" nnoremap <up> <C-a>
+" nnoremap <down> <C-x>
 
 " Better page down and page up
 noremap <C-n> <C-d>
