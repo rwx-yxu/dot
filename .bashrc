@@ -54,8 +54,8 @@ export EDITOR=vi
 export VISUAL=vi
 export EDITOR_PREFIX=vi
 export GOPRIVATE="github.com/$GITUSER/"*
-export GOPATH="$HOME/.local/share/go"
-export GOBIN="$HOME/.local/bin"
+#export GOPATH="$HOME/.local/go"
+export GOBIN="$HOME/.local/go/bin"
 export GOPROXY=direct
 export CGO_ENABLED=0
 export PYTHONDONTWRITEBYTECODE=2 # fucking shit-for-brains var name
@@ -122,15 +122,16 @@ pathprepend() {
 
 # remember last arg will be first in path
 pathprepend \
-  /usr/local/bin \
   "$HOME/.local/bin" \
-  "$GHREPOS/cmd-"* \
-  "$SCRIPTS" 
+	"$HOME/.local/go/bin" \
+	"$GHREPOS/cmd-"* \
+  /usr/local/bin \
+  /usr/local/go/bin \
+  "$SCRIPTS"
 
 pathappend \
   /usr/local/opt/coreutils/libexec/gnubin \
   '/mnt/c/Windows' \
-  '/mnt/c/Program Files (x86)/VMware/VMware Workstation' \
   /mingw64/bin \
   /usr/local/bin \
   /usr/local/sbin \
@@ -309,7 +310,7 @@ clone() {
 owncomp=(
   pdf md zet yt gl auth pomo config live iam sshkey ws x z clip 
   ./build build b ./k8sapp k8sapp ./setup ./cmd run ./run 
-  foo ./foo cmds ./cmds z bonzai
+  foo ./foo cmds ./cmds z bonzai-example keg
 )
 
 for i in "${owncomp[@]}"; do complete -C "$i" "$i"; done
