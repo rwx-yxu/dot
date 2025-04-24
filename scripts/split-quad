@@ -1,0 +1,7 @@
+#!/bin/sh
+
+tmux split-window -h      # Split the window vertically into left and right
+tmux split-window -v      # Split the current right pane horizontally
+tmux select-pane -L       # Move to the left pane
+tmux split-window -v      # Split the left pane horizontally
+
