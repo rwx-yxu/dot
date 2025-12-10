@@ -26,7 +26,7 @@ set noignorecase
 set autowrite
 
 " deactivate line numbers
-set nonumber
+set number
 
 " turn col and row position on in bottom right
 set ruler " see ruf for formatting
@@ -70,7 +70,7 @@ set textwidth=72
 "set colorcolumn=73
 
 " disable relative line numbers, remove no to sample it
-set norelativenumber
+set relativenumber
 
 " makes ~ effectively invisible
 "highlight NonText guifg=bg
@@ -240,9 +240,19 @@ if filereadable(expand("~/.vim/autoload/plug.vim"))
   Plug 'dense-analysis/ale'
   call plug#end()
 
+  set signcolumn=yes
+  let g:ale_sign_info = '💡'
   let g:ale_sign_error = '☠'
   let g:ale_sign_warning = '🙄'
+  let g:ale_sign_hint = '👉'
   let g:ale_linters = {'go': ['gometalinter', 'gofmt','gobuild']}
+  let g:ale_linter_aliases = {'bash': 'sh'}
+
+  let g:ale_fixers = {
+    \'sh': ['shfmt'],
+    \'bash': ['shfmt'],
+    \}
+  let g:ale_fix_on_save = 1
 
   " pandoc
   let g:pandoc#formatting#mode = 'h' " A'
@@ -269,6 +279,7 @@ if filereadable(expand("~/.vim/autoload/plug.vim"))
   "    let g:go_metalinter_command='golangci-lint'
   "    let g:go_metalinter_command='golint'
   "    let g:go_metalinter_autosave=1
+  let g:go_code_completion_enabled = 1
   set updatetime=100
   "let g:go_gopls_analyses = { 'composites' : v:false }
   au FileType go nmap <leader>m ilog.Print("made")<CR><ESC>
